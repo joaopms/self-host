@@ -1,0 +1,21 @@
+# Proxmox nodes
+[proxmox_nodes]
+andromeda ansible_host=andromeda.v.d.jpms.dev
+
+# All containers
+[containers]
+lambdas
+
+[containers:vars]
+ansible_connection=community.general.proxmox_pct_remote
+ansible_user=root
+
+
+
+# Proxmox node containers: Andromeda
+[andromeda_containers]
+lambdas	proxmox_vmid=111
+
+[andromeda_containers:vars]
+ansible_host=andromeda.v.d.jpms.dev
+ansible_private_key_file=/home/joaopms/.ssh/proxmox

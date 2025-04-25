@@ -1,0 +1,4 @@
+network_bridge: virtual
+
+base_id: 500
+storage: local-lvm

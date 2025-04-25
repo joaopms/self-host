@@ -1,0 +1,19 @@
+---
+# TODO Add pi-hole DNS entry
+# TODO Add caddy entry
+
+# Lambdas
+- name: Create the container
+  #hosts: proxmox_nodes
+  hosts: andromeda
+
+  vars: # TODO Get this from the inventory file?
+    hostname: lambdas
+    vmid: 111
+  roles:
+    - proxmox_management
+
+- name: Setup the container 
+  hosts: lambdas
+  roles:
+    - lambdas

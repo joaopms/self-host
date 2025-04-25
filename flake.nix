@@ -17,6 +17,7 @@
         (python312.withPackages (ps: [
           ps.ansible-core
           ps.proxmoxer
+          ps.github3-py
         ]))
       ];
     };

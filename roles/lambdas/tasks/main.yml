@@ -1,0 +1,37 @@
+---
+- name: Ensure container is up
+  ansible.builtin.ping:
+
+- name: Get latest trusted-cgi release
+  delegate_to: localhost
+  register: trusted_cgi
+  community.general.github_release:
+    user: reddec
+    repo: trusted-cgi
+    action: latest_release
+
+- name: Update repositories cache
+  ansible.builtin.apt:
+    update_cache: yes
+    cache_valid_time: 3600
+
+- name: Install dependencies
+  ansible.builtin.apt:
+    pkg:
+      - php-cli
+      - nodejs
+      - npm
+      - python3-venv
+
+- name: Install latest trusted-cgi
+  ansible.builtin.apt:
+    deb: "https://github.com/reddec/trusted-cgi/releases/download/{{ trusted_cgi.tag }}/trusted-cgi-server_{{ trusted_cgi.tag[1:] }}_linux_amd64.deb"
+
+- name: Check if trusted-cgi service is running
+  ansible.builtin.systemd_service:
+    name: trusted-cgi
+    state: started
+
+- name: Check if trusted-cgi is reachable
+  ansible.builtin.uri:
+    url: "http://{{ ansible_eth0.ipv4.address }}:3434"

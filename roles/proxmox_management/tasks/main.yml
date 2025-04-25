@@ -1,0 +1,35 @@
+---
+- delegate_to: localhost # Run locally since we're using Proxmox's API
+
+  module_defaults:
+    community.general.proxmox:
+      node: "{{ inventory_hostname }}"
+      api_user: "{{ proxmox.api_user }}"
+      api_host: "{{ proxmox.api_host }}"
+      api_port: "{{ proxmox.api_port }}"
+      api_token_id: "{{ proxmox.api_token_id }}"
+      api_token_secret: "{{ proxmox.api_token_secret }}"
+
+  block:
+    - name: Clone the base container
+      register: container
+      community.general.proxmox:
+        clone: "{{ base_id }}"
+        clone_type: full
+        storage: "{{ storage }}"
+        hostname: "{{ hostname }}"
+        vmid: "{{ vmid }}"
+        timeout: 120
+
+    - name: Setup networking
+      community.general.proxmox:
+        hostname: "{{ hostname }}"
+        vmid: "{{ vmid }}"
+        netif:
+          net0: "name=eth0,gw={{ containers.network_gateway }},ip={{ containers.network_prefix }}.{{ vmid }}/24,bridge={{ network_bridge }}"
+        update: true
+
+    - name: Start container
+      community.general.proxmox:
+        vmid: "{{ vmid }}"
+        state: started
