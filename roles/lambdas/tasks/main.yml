@@ -1,4 +1,7 @@
 ---
+- name: Gather facts
+  ansible.builtin.setup:
+
 - name: Ensure container is up
   ansible.builtin.ping:
 

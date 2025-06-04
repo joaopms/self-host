@@ -1,0 +1,13 @@
+---
+- name: "Create the container for \"{{ service }}\""
+  vars:
+    hostname: "{{ service }}"
+    vmid: "{{ hostvars[service].proxmox_vmid }}"
+  include_role:
+    name: proxmox_management
+
+- name: "Setup \"{{ service }}\""
+  include_role:
+    name: "{{ service }}"
+    apply: 
+      delegate_to: "{{ service }}"
